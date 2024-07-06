@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from database import db
-from forms import EmployeeForm
+from forms import EmployeeForm, SearchForm
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///office.db'
@@ -11,10 +11,20 @@ with app.app_context():
     from models import Employee
     db.create_all()
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    employees = Employee.query.all()
-    return render_template('index.html', employees=employees)
+    form = SearchForm()
+    employees = []
+    if form.validate_on_submit():
+        search_term = form.search.data
+        employees = Employee.query.filter(
+            (Employee.first_name.ilike(f'%{search_term}%')) |
+            (Employee.middle_name.ilike(f'%{search_term}%')) |
+            (Employee.last_name.ilike(f'%{search_term}%')) |
+            (Employee.designation.ilike(f'%{search_term}%')) |
+            (Employee.employee_id.ilike(f'%{search_term}%'))
+        ).all()
+    return render_template('index.html', form=form, employees=employees)
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_employee():
