@@ -11,8 +11,12 @@ with app.app_context():
     from models import Employee
     db.create_all()
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
+    return render_template('index.html')
+
+@app.route('/search', methods=['GET', 'POST'])
+def search_employee():
     form = SearchForm()
     employees = []
     if form.validate_on_submit():
@@ -24,7 +28,7 @@ def index():
             (Employee.designation.ilike(f'%{search_term}%')) |
             (Employee.employee_id.ilike(f'%{search_term}%'))
         ).all()
-    return render_template('index.html', form=form, employees=employees)
+    return render_template('search_employee.html', form=form, employees=employees)
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_employee():

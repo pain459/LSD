@@ -7,24 +7,22 @@
     <h1>Add Employee</h1>
     <form method="POST">
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.first_name.label }}<br>
-            {{ form.first_name(size=32) }}<br>
-            {{ form.middle_name.label }}<br>
-            {{ form.middle_name(size=32) }}<br>
-            {{ form.last_name.label }}<br>
-            {{ form.last_name(size=32) }}<br>
-            {{ form.sex.label }}<br>
-            {{ form.sex(size=32) }}<br>
-            {{ form.age.label }}<br>
-            {{ form.age() }}<br>
-            {{ form.designation.label }}<br>
-            {{ form.designation(size=32) }}<br>
-            {{ form.employee_id.label }}<br>
-            {{ form.employee_id(size=32) }}<br>
-            {{ form.submit() }}
-        </p>
+        {{ form.first_name.label }}<br>
+        {{ form.first_name(size=32) }}<br>
+        {{ form.middle_name.label }}<br>
+        {{ form.middle_name(size=32) }}<br>
+        {{ form.last_name.label }}<br>
+        {{ form.last_name(size=32) }}<br>
+        {{ form.sex.label }}<br>
+        {{ form.sex(size=32) }}<br>
+        {{ form.age.label }}<br>
+        {{ form.age() }}<br>
+        {{ form.designation.label }}<br>
+        {{ form.designation(size=32) }}<br>
+        {{ form.employee_id.label }}<br>
+        {{ form.employee_id(size=32) }}<br>
+        {{ form.submit() }}
     </form>
-    <a href="{{ url_for('index') }}">Back to Employee List</a>
+    <a href="{{ url_for('index') }}">Back to Home</a>
 </body>
 </html>
