@@ -5,6 +5,15 @@
 </head>
 <body>
     <h1>Search Employee</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     <form method="POST" action="{{ url_for('search_employee') }}">
         {{ form.hidden_tag() }}
         {{ form.search.label }}<br>

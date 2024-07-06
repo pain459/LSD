@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from database import db
 from forms import EmployeeForm, SearchForm
+from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///office.db'
@@ -43,9 +44,13 @@ def add_employee():
             designation=form.designation.data,
             employee_id=form.employee_id.data
         )
-        db.session.add(employee)
-        db.session.commit()
-        return redirect(url_for('index'))
+        try:
+            db.session.add(employee)
+            db.session.commit()
+            return redirect(url_for('index'))
+        except IntegrityError:
+            db.session.rollback()
+            flash('Employee ID must be unique. Please use a different Employee ID.', 'error')
     return render_template('add_employee.html', form=form)
 
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
@@ -54,8 +59,12 @@ def update_employee(id):
     form = EmployeeForm(obj=employee)
     if form.validate_on_submit():
         form.populate_obj(employee)
-        db.session.commit()
-        return redirect(url_for('index'))
+        try:
+            db.session.commit()
+            return redirect(url_for('index'))
+        except IntegrityError:
+            db.session.rollback()
+            flash('Employee ID must be unique. Please use a different Employee ID.', 'error')
     return render_template('update_employee.html', form=form, employee=employee)
 
 @app.route('/delete/<int:id>', methods=['POST'])
