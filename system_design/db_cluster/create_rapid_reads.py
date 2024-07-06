@@ -20,7 +20,7 @@ def main():
     start_time = time.time()
 
     # Use ThreadPoolExecutor to make concurrent GET requests
-    with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         futures = [executor.submit(get_record, record_id) for _ in range(num_requests)]
         concurrent.futures.wait(futures)
 
