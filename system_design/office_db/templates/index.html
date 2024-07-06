@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Office Database</title>
+</head>
+<body>
+    <h1>Employee List</h1>
+    <a href="{{ url_for('add_employee') }}">Add Employee</a>
+    <ul>
+        {% for employee in employees %}
+            <li>
+                {{ employee.first_name }} {{ employee.middle_name }} {{ employee.last_name }} - {{ employee.designation }}
+                <a href="{{ url_for('update_employee', id=employee.id) }}">Update</a>
+                <form action="{{ url_for('delete_employee', id=employee.id) }}" method="POST" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
