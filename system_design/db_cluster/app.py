@@ -1,13 +1,29 @@
 from flask import Flask, request, jsonify
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
 from database_setup import Record, Base
 import os
+import time
 
 app = Flask(__name__)
 
 DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://user:password@localhost/testdb')
-engine = create_engine(DATABASE_URL)
+print(f"Using database URL: {DATABASE_URL}")
+
+# Retry logic for database connection
+for _ in range(10):  # Try to connect 10 times
+    try:
+        engine = create_engine(DATABASE_URL)
+        engine.connect()
+        break
+    except OperationalError:
+        print("Database connection failed. Retrying in 5 seconds...")
+        time.sleep(5)
+else:
+    print("Failed to connect to the database after several attempts.")
+    exit(1)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base.metadata.create_all(bind=engine)
 

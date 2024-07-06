@@ -9,14 +9,11 @@ services:
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
+    volumes:
+      - ./database_setup.py:/docker-entrypoint-initdb.d/database_setup.py
+      - ./generate_records.py:/docker-entrypoint-initdb.d/generate_records.py
+    mem_limit: 512m
+    cpus: "0.5"
 
   web:
     build: .
@@ -24,13 +21,10 @@ services:
       - db
     ports:
       - "5000:5000"
+    volumes:
+      - ./database_setup.py:/docker-entrypoint-initdb.d/database_setup.py
+      - ./generate_records.py:/docker-entrypoint-initdb.d/generate_records.py
     environment:
-      DATABASE_URL: postgres://user:password@db:5432/testdb
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
+      DATABASE_URL: postgresql://user:password@db:5432/testdb
+    mem_limit: 1g
+    cpus: "1.0"

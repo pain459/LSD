@@ -9,7 +9,7 @@ DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://user:password@localhost/t
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-def generate_records(session, count=10000000):
+def generate_records(session, count=100000):
     fake = Faker()
     for _ in range(count):
         record = Record(
