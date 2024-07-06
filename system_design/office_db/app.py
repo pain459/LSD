@@ -1,14 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
+from database import db
 from forms import EmployeeForm
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///office.db'
 app.config['SECRET_KEY'] = 'your_secret_key'
-db = SQLAlchemy(app)
+db.init_app(app)
 
-# Import models after db is initialized
-from models import Employee
+with app.app_context():
+    from models import Employee
+    db.create_all()
 
 @app.route('/')
 def index():
@@ -51,5 +52,4 @@ def delete_employee(id):
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    db.create_all()
     app.run(debug=True)
