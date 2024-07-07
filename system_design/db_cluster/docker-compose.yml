@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  master:
+    image: postgres:latest
+    container_name: pg_master
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - pg_network
+    volumes:
+      - pg_master_data:/var/lib/postgresql/data
+    restart: always
+
+  worker1:
+    image: postgres:latest
+    container_name: pg_worker1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    networks:
+      - pg_network
+    depends_on:
+      - master
+    restart: always
+    volumes:
+      - pg_worker1_data:/var/lib/postgresql/data
+
+  worker2:
+    image: postgres:latest
+    container_name: pg_worker2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    networks:
+      - pg_network
+    depends_on:
+      - master
+    restart: always
+    volumes:
+      - pg_worker2_data:/var/lib/postgresql/data
+
+networks:
+  pg_network:
+    driver: bridge
+
+volumes:
+  pg_master_data:
+  pg_worker1_data:
+  pg_worker2_data:
