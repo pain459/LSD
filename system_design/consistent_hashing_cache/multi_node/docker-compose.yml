@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  node1:
+    build: .
+    container_name: node1
+    environment:
+      - NODE_NAME=node1
+    ports:
+      - "5001:5000"
+    networks:
+      - cache_network
+
+  node2:
+    build: .
+    container_name: node2
+    environment:
+      - NODE_NAME=node2
+    ports:
+      - "5002:5000"
+    networks:
+      - cache_network
+
+  node3:
+    build: .
+    container_name: node3
+    environment:
+      - NODE_NAME=node3
+    ports:
+      - "5003:5000"
+    networks:
+      - cache_network
+
+networks:
+  cache_network:
+    driver: bridge
