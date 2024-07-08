@@ -31,6 +31,12 @@ services:
     networks:
       - cache_network
 
+  health_check:
+    build: .
+    command: python health_check.py
+    networks:
+      - cache_network
+
 networks:
   cache_network:
     driver: bridge

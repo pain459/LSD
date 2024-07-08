@@ -30,9 +30,13 @@ class ConsistentHashing:
         self.sorted_keys.sort()
         return keys_to_redistribute
 
-    def get_node(self, key):
+    def get_nodes(self, key, num_replicas=2):
         if not self.ring:
-            return None
+            return []
         hash_key = self._hash(key)
-        idx = bisect.bisect(self.sorted_keys, hash_key) % len(self.sorted_keys)
-        return self.ring[self.sorted_keys[idx]]
+        nodes = []
+        for i in range(num_replicas):
+            idx = bisect.bisect(self.sorted_keys, hash_key) % len(self.sorted_keys)
+            nodes.append(self.ring[self.sorted_keys[idx]])
+            hash_key += 1
+        return nodes

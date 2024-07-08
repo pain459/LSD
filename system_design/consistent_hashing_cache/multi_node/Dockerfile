@@ -8,7 +8,7 @@ WORKDIR /app
 COPY app /app
 
 # Install Flask
-RUN pip install flask
+RUN pip install flask requests
 
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
