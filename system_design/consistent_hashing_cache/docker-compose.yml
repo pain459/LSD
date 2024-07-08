@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  cache_server:
+    build: .
+    ports:
+      - "5000:5000"
