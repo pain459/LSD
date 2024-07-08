@@ -6,3 +6,39 @@ curl http://localhost:5000/get?key=test
 
 # Delete a key-value pair
 curl -X DELETE -H "Content-Type: application/json" -d '{"key":"test"}' http://localhost:5000/delete
+
+
+--- Testing consistent hashing ---
+
+curl http://localhost:5000/list_nodes
+{"nodes":["node1","node2","node3"]}
+
+curl -X POST -H "Content-Type: application/json" -d '{"node":"node4"}' http://localhost:5000/add_node
+{"node":"node4","status":"success"}
+
+for i in {1..10}; do curl -X POST -H "Content-Type: application/json" -d "{\"key\":\"key$i\", \"value\":\"value$i\"}" http://localhost:5000/set; done
+{"node":"node2","status":"success"}
+{"node":"node4","status":"success"}
+{"node":"node1","status":"success"}
+{"node":"node2","status":"success"}
+{"node":"node1","status":"success"}
+{"node":"node4","status":"success"}
+{"node":"node4","status":"success"}
+{"node":"node1","status":"success"}
+{"node":"node4","status":"success"}
+{"node":"node4","status":"success"}
+
+curl -X POST -H "Content-Type: application/json" -d '{"node":"node1"}' http://localhost:5000/remove_node
+{"node":"node1","status":"success"}
+
+for i in {1..10}; do curl "http://localhost:5000/get?key=key$i"; done
+{"node":"node2","value":"value1"}
+{"node":"node4","value":"value2"}
+{"node":"node4","value":"value3"}
+{"node":"node2","value":"value4"}
+{"node":"node4","value":"value5"}
+{"node":"node4","value":"value6"}
+{"node":"node4","value":"value7"}
+{"node":"node4","value":"value8"}
+{"node":"node4","value":"value9"}
+{"node":"node4","value":"value10"}

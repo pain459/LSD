@@ -41,7 +41,12 @@ def add_node():
 @app.route('/remove_node', methods=['POST'])
 def remove_node():
     node = request.json['node']
-    ch.remove_node(node)
+    keys_to_redistribute = ch.remove_node(node)
+    for key in list(caches[node].store.keys()):
+        value = caches[node].get(key)
+        caches[node].delete(key)
+        new_node = ch.get_node(key)
+        caches[new_node].set(key, value)
     caches.pop(node, None)
     return jsonify({'status': 'success', 'node': node})
 

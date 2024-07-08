@@ -21,10 +21,14 @@ class ConsistentHashing:
         self.sorted_keys.sort()
 
     def remove_node(self, node):
+        keys_to_redistribute = []
         for i in range(self.replicas):
             key = self._hash(f'{node}:{i}')
-            del self.ring[key]
-            self.sorted_keys.remove(key)
+            if key in self.ring:
+                del self.ring[key]
+                self.sorted_keys.remove(key)
+        self.sorted_keys.sort()
+        return keys_to_redistribute
 
     def get_node(self, key):
         if not self.ring:
