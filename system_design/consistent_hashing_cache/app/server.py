@@ -31,5 +31,23 @@ def delete_key():
     caches[node].delete(key)
     return jsonify({'node': node, 'status': 'success'})
 
+@app.route('/add_node', methods=['POST'])
+def add_node():
+    node = request.json['node']
+    ch.add_node(node)
+    caches[node] = Cache()
+    return jsonify({'status': 'success', 'node': node})
+
+@app.route('/remove_node', methods=['POST'])
+def remove_node():
+    node = request.json['node']
+    ch.remove_node(node)
+    caches.pop(node, None)
+    return jsonify({'status': 'success', 'node': node})
+
+@app.route('/list_nodes', methods=['GET'])
+def list_nodes():
+    return jsonify({'nodes': list(caches.keys())})
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
