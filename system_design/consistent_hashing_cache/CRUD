@@ -1,0 +1,8 @@
+# Set a key-value pair
+curl -X POST -H "Content-Type: application/json" -d '{"key":"test", "value":"123"}' http://localhost:5000/set
+
+# Get the value for a key
+curl http://localhost:5000/get?key=test
+
+# Delete a key-value pair
+curl -X DELETE -H "Content-Type: application/json" -d '{"key":"test"}' http://localhost:5000/delete
