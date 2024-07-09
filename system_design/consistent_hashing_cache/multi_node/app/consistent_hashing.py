@@ -2,13 +2,10 @@ import hashlib
 import bisect
 
 class ConsistentHashing:
-    def __init__(self, nodes=None, replicas=3):
+    def __init__(self, replicas=3):
         self.replicas = replicas
         self.ring = dict()
         self.sorted_keys = []
-        if nodes:
-            for node in nodes:
-                self.add_node(node)
 
     def _hash(self, key):
         return int(hashlib.md5(key.encode('utf-8')).hexdigest(), 16)
@@ -21,22 +18,20 @@ class ConsistentHashing:
         self.sorted_keys.sort()
 
     def remove_node(self, node):
-        keys_to_redistribute = []
         for i in range(self.replicas):
             key = self._hash(f'{node}:{i}')
-            if key in self.ring:
-                del self.ring[key]
-                self.sorted_keys.remove(key)
-        self.sorted_keys.sort()
-        return keys_to_redistribute
+            del self.ring[key]
+            self.sorted_keys.remove(key)
 
-    def get_nodes(self, key, num_replicas=2):
+    def get_node(self, key):
         if not self.ring:
-            return []
+            return None
         hash_key = self._hash(key)
-        nodes = []
-        for i in range(num_replicas):
-            idx = bisect.bisect(self.sorted_keys, hash_key) % len(self.sorted_keys)
-            nodes.append(self.ring[self.sorted_keys[idx]])
-            hash_key += 1
-        return nodes
+        idx = bisect.bisect(self.sorted_keys, hash_key) % len(self.sorted_keys)
+        return self.ring[self.sorted_keys[idx]]
+
+    def get_all_nodes(self):
+        return set(self.ring.values())
+
+    def get_keys(self, node):
+        return [k for k, v in self.ring.items() if v == node]

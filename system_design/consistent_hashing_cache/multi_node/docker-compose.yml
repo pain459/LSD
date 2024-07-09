@@ -3,40 +3,21 @@ version: '3'
 services:
   node1:
     build: .
-    container_name: node1
-    environment:
-      - NODE_NAME=node1
     ports:
       - "5001:5000"
-    networks:
-      - cache_network
+    environment:
+      - NODE_NAME=node1_1,node1_2,node1_3
 
   node2:
     build: .
-    container_name: node2
-    environment:
-      - NODE_NAME=node2
     ports:
       - "5002:5000"
-    networks:
-      - cache_network
+    environment:
+      - NODE_NAME=node2_1,node2_2,node2_3
 
   node3:
     build: .
-    container_name: node3
-    environment:
-      - NODE_NAME=node3
     ports:
       - "5003:5000"
-    networks:
-      - cache_network
-
-  health_check:
-    build: .
-    command: python health_check.py
-    networks:
-      - cache_network
-
-networks:
-  cache_network:
-    driver: bridge
+    environment:
+      - NODE_NAME=node3_1,node3_2,node3_3

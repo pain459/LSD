@@ -11,3 +11,6 @@ class Cache:
     def delete(self, key):
         if key in self.store:
             del self.store[key]
+
+    def get_all_keys(self):
+        return list(self.store.keys())
